@@ -4,6 +4,14 @@ body{
     touch-action:none;
     position:static
 }
+
+:root {
+    --btn-dim: linear-gradient(to bottom, rgb(93 85 189 / 60%) 0%, rgb(96 88 192 / 90%) 50%, rgb(112 120 202 / 90%) 50%);
+    --btn-default: linear-gradient(to bottom, rgb(79 64 255 / 60%) 0%, rgb(110 98 255 / 90%) 50%, rgb(121 132 255 / 90%) 50%);
+    --btn-hover: linear-gradient(to bottom, rgb(124 113 255 / 60%) 0%, rgb(126 115 255 / 90%) 50%, rgb(147 156 255 / 90%) 50%);
+    --btn-active: linear-gradient(to bottom, rgb(124 113 255 / 60%) 0%, rgb(126 115 255 / 90%) 50%, rgb(147 156 255 / 90%) 50%);
+    --btn-on: linear-gradient(to bottom, rgb(156 177 255 / 60%) 0%, rgb(185 179 255 / 90%) 50%, rgb(224 226 255 / 90%) 50%)
+}
 *{
     font-family:ubuntu mono,monospace,courier new,Courier,special;
     -webkit-tap-highlight-color:transparent
@@ -60,17 +68,51 @@ h3{
     color:#fff;
     transition:opacity .5s
 }
-#info{
-    background-color:rgba(30,30,30,.8);
-    color:#fff;
-    padding:5px 0;
-    font-size:18px;
-    pointer-events:auto;
-    transition:all .5s;
-    z-index:2;
-    position:absolute;
-    bottom:0;
-    transition:all .5s
+#info {
+    background-image: var(--btn-default);
+    border: 1px solid rgba(39, 39, 39, 0.8);
+    color: #fff;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 8px;
+    height: 30px;
+    padding: 4px 14px;
+    font-size: 18px;
+    pointer-events: auto;
+    transition: all 0.9s;
+    z-index: 2;
+    position: absolute;
+
+    width: 90%;         
+    max-width: 500px; 
+    overflow-x: auto;
+    overflow-y: hidden;
+    backdrop-filter: blur(4px);
+}
+
+.separator {
+    background-color: rgb(0 0 0 / 40%);
+    border-radius: 2px;
+    flex-shrink: 0;
+    width: 2px;
+    height: 24px;
+    margin: 5px
+}
+
+
+#headline {
+	position: fixed;
+    display: flex;
+    flex-flow: column nowrap;
+    margin-left: 0;
+    transition: margin-left .12s ease, transform .12s ease, background-color .28s ease;
+    align-items: flex-start;
+	transform: translateX(0);
+	z-index: 1000;
+}
+#headline.menu-open {
+	transform: translateX(250px);
 }
 #decorations{
     position:absolute;
@@ -103,22 +145,16 @@ h3{
     filter:opacity(1)
 }
 #usermenu{
-    background-color:rgba(30,30,30,.8);
+    background-color:transparent;
     color:#fff;
     position:absolute;
-    padding:5px;
-    margin-top:10px;
-    border-radius:0 5px 5px 0;
-    transform:translateX(-105%);
+    transform:translateX(-255px);
     pointer-events:auto;
     transition:all .5s;
     display:flex;
-    width:250px;
-    height:540px;
     max-height:70vh;
     justify-content:space-between;
     -webkit-user-select:none;
-    user-select:none
 }
 #admin,#wallsettings{
     display:none
@@ -148,12 +184,15 @@ h3{
 }
 .buttonlink{
     text-decoration:underline;
-    color:#00b7ff;
+    color:#becdff;
     cursor:pointer
 }
 #optionsmenu{
-    width:100%;
+    background: var(--btn-dim);
+    border: 1px solid rgb(145 113 255 / 70%);
+    border-radius: 0 0 10px 0;
     overflow:auto;
+	width: 250px;
     -ms-overflow-style:none;
     overflow-wrap:break-word;
     scrollbar-width:none;
@@ -176,20 +215,96 @@ input{
 #closemenu:active,#closeteleport:active{
     transform:scale(.9)
 }
-#colourlist{
-    transition:none;
-    overflow:auto;
-    -ms-overflow-style:none;
-    scrollbar-width:none;
-    background-color:rgba(255,255,255,.35);
-    border-radius:5px
+#colourcontainer {
+    display: flex;
+    /* center */
+    top: unset;
+    bottom: 60px;
+    left: 50%;
+    position: absolute;
+    transform: translateX(-50%);
+    max-width: 400px;
+    height: 80px;
+    width: 65%;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    background-image: var(--btn-default);
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid rgba(139, 139, 139, 0.5);
+    box-shadow: 0 4px 12px rgba(139, 139, 139, 0.3);
+    backdrop-filter: blur(4px);
+    flex-direction: column;
 }
-#colourlist::-webkit-scrollbar,#optionsmenu::-webkit-scrollbar{
-    display:none
+#colortabs {
+	display: flex;
+	width: 100vw;
+	height: 30px;
+	flex-direction: row;
+}
+#colortabs > button {
+    background: transparent;
+    color: #fff8;
+    border: 0;
+}
+#colortabs > button:disabled {
+    background: transparent;
+    color: #fff;
+    border-width: 2px;
+    border-style: inset;
+	border-color: #fff4;
+}
+#colourlist {
+    border: 0.56px solid #fff;
+    border-radius: 5px;
+    display: flex;
+    height: 55px;
+    overflow: auto;
+    flex-direction: column;
+}
+#colourlist > div {
+    flex: 0 0 auto;
+    border-radius: 5px;
+    background-color: rgba(19, 19, 24, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: auto;
+    transition: all 50ms;
+    cursor: pointer;
+}
+
+#monocolourlist > div,
+#darkercolourlist > div,
+#darkcolourlist > div,
+#normalcolourlist > div,
+#lightcolourlist > div,
+#lightercolourlist > div {
+    border-radius: 100%;
+}
+#customcolour {
+    margin: 4px;
+    border: 2px solid #fff;
+    padding: 0;
+    width: 15%;
+    height: 50%;
+    border-radius: 5%;
+    cursor: pointer;
+    transition: all 50ms;
+}
+#colourlist::-webkit-scrollbar,
+#optionsmenu::-webkit-scrollbar {
+    display: none
+}
+
+
+.colour.selected {
+    border: 3px solid #fff
 }
 .colour{
-    width:30px;
-    height:30px;
+    width:20px;
+    height:20px;
     margin:3px;
     border-radius:25%;
     box-sizing:border-box;
@@ -209,25 +324,68 @@ th,td{
 #coords{
     cursor:pointer
 }
-.infobtn{
-    width:20px;
-    padding:0 10px;
-    vertical-align:middle;
-    transition:all .1s;
-    flex-grow:1;
-    display:flex;
-    justify-content:center;
-    align-items:center
+.infobtn {
+    border-radius: 5px;
+    width: 34px;
+    padding: 0 0;
+    vertical-align: middle;
+    transition: all .1s;
+    flex-grow: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
-.infobtn>img,.button{
-    -webkit-user-drag:none;
-    -khtml-user-drag:none;
-    -moz-user-drag:none;
-    -o-user-drag:none
+
+.infobtn.decor .infobtn.tool {
+    width: 9px;
+    padding-left: 6px;
+    padding-right: 6px;
+    min-width: fit-content;
+    min-height: fit-content;
 }
-.infobtn:active{
-    transform:scale(.9);
-    background-color:rgba(30,30,30,.3)
+
+.infobtn.enabled {
+	background: #fff5
+}
+
+.infobtn.decor {
+    transform: scale(0.9);
+}
+
+.infobtn.decor>img {
+    width: fit-content;
+    height: fit-content;
+}
+
+.infobtn>img,
+.button {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none
+}
+
+.infobtn:active {
+    transform: scale(.9);
+    background-color: rgba(30, 30, 30, .3)
+}
+.bubble {
+    background: #111c;
+    border: 1px solid rgb(145 113 255 / 70%);
+    background-image: var(--btn-dim);
+    color: #fff;
+    min-width: 24px;
+    min-height: 24px;
+    padding:8px;
+    border-radius: 0 12px 12px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.bubble.clickable {
+    cursor: pointer;
+    transition: background-color .12
 }
 .container{
     display:flex;
@@ -407,15 +565,6 @@ th,td{
     width:20px;
     padding:5px;
     margin:5px 0 0 5px
-}
-#chatbutton{
-    background-color:rgba(30,30,30,.8);
-    border-radius:0 0 0 5px;
-    padding:10px;
-    margin-bottom:24px;
-    pointer-events:auto;
-    position:relative;
-    cursor:pointer
 }
 #unread{
     width:10px;
@@ -613,22 +762,21 @@ th,td{
     height:40px;
     user-select:none
 }
-@media only screen and (min-width:750px){
-    #info{
-        top:0;
-        bottom:unset;
-        border-radius:0 0 5px 0;
-        padding:5px
+.buttons {
+    display: flex;
+    width: 150vw;
+    height: 50px;
+    user-select: none
+}
+
+@media only screen {
+    .infobtn>img {
+        width: 24px
     }
-    .infobtn>img{
-        width:20px
-    }
-    .buttons{
-        width:100%;
-        height:unset
-    }
-    #usermenu{
-        margin-top:60px
+
+    .buttons {
+        width: 100%;
+        height: unset
     }
 }
 ul::-webkit-scrollbar{

@@ -217,9 +217,31 @@
 			br("bold", Boolean(8 & e)), br("italic", Boolean(4 & e)), br("underline", Boolean(2 & e)), br("strikethrough", Boolean(1 & e))
 		}
 		const ue = 192,
-			se = ["#000000", "#898D90", "#D4D7D9", "#FF99AA", "#FF4500", "#FFA800", "#9C6926", "#FFD635", "#7EED56", "#00CC78", "#51E9F4", "#3690EA", "#2450A4", "#B44AC0", "#811E9F", "#BE0039", "#00A368", "#00756F", "#009EAA", "#493AC1", "#6A5CFF", "#FF3881", "#6D482F", "#6D001A", "#FFF8B8", "#00CCC0", "#94B3FF", "#E4ABFF", "#DE107F", "#FFB470", "#515252"],
-			de = ["black", "grey", "light grey", "light pink", "red", "orange", "brown", "yellow", "light green", "green", "light blue", "blue", "dark blue", "purple", "dark purple", "dark red", "dark green", "dark teal", "teal", "indigo", "periwinkle", "pink", "dark brown", "burgundy", "pale yellow", "light teal", "lavender", "pale purple", "magenta", "beige", "dark grey"],
-			fe = [0, 30, 1, 2, 23, 15, 4, 5, 7, 24, 16, 9, 8, 17, 18, 25, 12, 11, 10, 19, 20, 26, 14, 13, 27, 28, 21, 3, 22, 6, 29];
+			
+			fe = [0, 44, 30, 1, 2, 33, 43, 23, 15, 36, 52, 62, 65, 4, 40, 47, 22, 6, 5, 29, 61, 54, 64, 7, 24, 34, 57, 45, 8, 37, 63, 16, 55, 9, 51, 46, 17, 18, 25, 10, 49, 50, 12, 11, 59, 38, 53, 48, 41, 31, 56, 42, 19, 20, 26, 35, 39, 14, 13, 27, 60, 32, 28, 21, 3, 58];
+		var se = Array.from({length: 66},(_,i)=>{
+					return colorCodes[fe.indexOf(i)]
+				}),
+		de = Array.from({length: 66},(_,i)=>{
+					return colorNames[fe.indexOf(i)]
+				});
+		
+		var monochromeColor = [0, 44, 30, 1, 2, 33],
+				lightColor2 = Array.from({length: 12},(_,i)=>{
+					return fe[5*i+10]
+				}),
+				lightColor = Array.from({length: 12},(_,i)=>{
+					return fe[5*i+9]
+				}),
+				normalColor = Array.from({length: 12},(_,i)=>{
+					return fe[5*i+8]
+				}),
+				darkColor = Array.from({length: 12},(_,i)=>{
+					return fe[5*i+7]
+				}),
+				darkColor2 = Array.from({length: 12},(_,i)=>{
+					return fe[5*i+6]
+				});
 
 		function ve(e) {
 			for (var t = n, r = 0; r < se["length"]; r++)
@@ -1808,10 +1830,60 @@ function validRGB(r,g,b) {
 		}), k["addEventListener"]("touchend", (function(e) {
 			Nn && (Dn = void 0, jn = 0, Nn = !1, i["blur"]())
 		}));
-		var zn = 0,
-			qn = performance["now"](),
-			Yn = 0;
-		const Jn = [4, 5, 7, 8, 9, 18, 11, 20, 13, 28, 15];
+		var lightRainbow = [];
+		for (let lv = 0; lv <= lightColor.length-3; lv++) {
+			lightRainbow.push(lightColor[lv+1])
+		}
+		var normalRainbow = [];
+		for (let lv = 0; lv <= normalColor.length-3; lv++) {
+			normalRainbow.push(normalColor[lv+1])
+		}
+		var darkRainbow = [];
+		for (let lv = 0; lv <= darkColor.length-3; lv++) {
+			darkRainbow.push(darkColor[lv+1])
+		}
+		var zn = 0
+		  , qn = performance[n(430)]()
+		  , Yn = 0
+		, Jn = normalRainbow, rainbowMode,
+				rainbowModeMap = new Map(), rainbowArray = ["Light", "Normal", "Dark", "Monochromatic", "Classic"];
+		rainbowModeMap.set("Light",lightRainbow),
+		rainbowModeMap.set("Normal",normalRainbow),
+		rainbowModeMap.set("Dark",darkRainbow),
+		rainbowModeMap.set("Monochromatic",monochromeColor),
+		rainbowModeMap.set("Classic",[4,5,7,8,9,18,11,20,13,21,15]);
+		if (localStorage.rainbowmode == "Light") {
+			Jn = lightRainbow
+		} else if (localStorage.rainbowmode == "Normal") {
+			Jn = normalRainbow
+		} else if (localStorage.rainbowmode == "Dark") {
+			Jn = darkRainbow
+		} else if (localStorage.rainbowmode == "Monochromatic") {
+			Jn = monochromeColor
+		} else if (localStorage.rainbowmode == "Classic") {
+			Jn = [4,5,7,8,9,18,11,20,13,21,15]
+		}
+		var rainbowOption;
+		for (var rainbowModeLength = 0; rainbowModeLength < rainbowArray["length"]; rainbowModeLength++)
+			(rainbowOption = document["createElement"]("option")),
+				(rainbowOption["text"] = rainbowArray[rainbowModeLength]),
+				document.getElementById("rainbowmodeselect").add(rainbowOption);
+		document.getElementById("rainbowmodeselect").value = localStorage.rainbowmode
+		function rainbowModeChange(e) {
+			var t = n;
+			if (((rainbowMode = e), rainbowModeMap["has"](rainbowMode))){
+				Jn = rainbowModeMap.get(rainbowMode);
+			}
+			localStorage["setItem"]("rainbowmode", rainbowMode),
+			(document.getElementById("rainbowmodeselect").value = rainbowMode);
+		}
+		document.getElementById
+		("rainbowmodeselect")
+		.onchange = function (e) {
+			var t = n;
+			rainbowModeChange(e.target.value)
+			console.log(rainbowMode)
+		};
 
 		function Vn(e, t, r, a) {
 			var o = n;
@@ -1931,17 +2003,183 @@ function validRGB(r,g,b) {
 			var t = n;
 			switch (ie(!1), (2 == e && 2 == lr || 1 == e && 1 == lr) && (e = 0), e) {
 				case 0:
-					x.style["transform"] = "translateX(-105%)";
+					x.style["transform"] = "translateX(-250px)";
+					document.getElementById("headline").classList.add("menu-open")
 					break;
 				case 1:
-					var r = document.getElementById("optionsmenu")["clientWidth"];
-					x["style"]["transform"] = "translateX(" + -r + "px)";
+				var colorList = document.getElementById("colourcontainer");
+					colorShown = !colorShown
+					if (colorShown) {
+						colorList.classList.remove("hidden")
+					} else {
+						colorList.classList.add("hidden")
+					}
 					break;
 				default:
-					x.style.transform = "translateX(0px)", M["classList"]["contains"]("open") && M["classList"]["remove"]("open")
+					x.style.transform = "translateX(0px)", M["classList"]["contains"]("open") && M["classList"]["remove"]("open");
+					document.getElementById("headline").classList.remove("menu-open")
 			}
 			lr = e, en()
 		}
+
+		function addColors(e) {
+			var t = n
+			switch (e) {
+				case "mono":
+					var monocolourlist = document.createElement("div");
+					monocolourlist.id = "monocolourlist";
+					monocolourlist["classList"]["add"]("small-scrollbar");
+					monocolourlist["classList"]["add"]("colourlist");
+					for (let i = 0; i < monochromeColor.length; i++) {
+						var mono = document.createElement("div");
+						mono["classList"]["add"]("colour")
+						mono["style"]["backgroundColor"] = se[monochromeColor[i]]
+						mono.addEventListener("click", function (t) {
+							mr(monochromeColor[i]), nn(t);
+						})
+						mono.setAttribute("id", monochromeColor[i]),
+						(mono["style"]["backgroundColor"] = se[monochromeColor[i]]),
+						(mono["title"] = de[monochromeColor[i]])
+						monocolourlist.appendChild(mono);
+					}
+					w.appendChild(monocolourlist);
+					break;
+				case "light2":
+					var lightcolourlist = document.createElement("div");
+					lightcolourlist.id = "lightercolourlist";
+					lightcolourlist.style.display = "none";
+					lightcolourlist["classList"]["add"]("small-scrollbar")
+					lightcolourlist["classList"]["add"]("colourlist")
+					for (let i = 0; i < lightColor2.length; i++) {
+						var light = document.createElement("div");
+						light["classList"]["add"]("colour")
+						light["style"]["backgroundColor"] = se[lightColor2[i]]
+						light.addEventListener("click", function (t) {
+							mr(lightColor2[i]), nn(t);
+						})
+						light.setAttribute("id", lightColor2[i]),
+						(light["style"]["backgroundColor"] = se[lightColor2[i]]),
+						(light["title"] = de[lightColor2[i]])
+						lightcolourlist.appendChild(light);
+					}
+					w.appendChild(lightcolourlist);
+					break;
+				case "light":
+					var lightcolourlist = document.createElement("div");
+					lightcolourlist.id = "lightcolourlist";
+					lightcolourlist.style.display = "none";
+					lightcolourlist["classList"]["add"]("small-scrollbar")
+					lightcolourlist["classList"]["add"]("colourlist")
+					for (let i = 0; i < lightColor.length; i++) {
+						var light = document.createElement("div");
+						light["classList"]["add"]("colour")
+						light["style"]["backgroundColor"] = se[lightColor[i]]
+						light.addEventListener("click", function (t) {
+							mr(lightColor[i]), nn(t);
+						})
+						light.setAttribute("id", lightColor[i]),
+						(light["style"]["backgroundColor"] = se[lightColor[i]]),
+						(light["title"] = de[lightColor[i]])
+						lightcolourlist.appendChild(light);
+					}
+					w.appendChild(lightcolourlist);
+					break;
+				case "normal":
+					var normalcolourlist = document.createElement("div");
+					normalcolourlist.id = "normalcolourlist";
+					normalcolourlist["classList"]["add"]("small-scrollbar")
+					normalcolourlist["classList"]["add"]("colourlist")
+					for (let i = 0; i < normalColor.length; i++) {
+						var normal = document.createElement("div");
+						normal["classList"]["add"]("colour")
+						normal["style"]["backgroundColor"] = se[normalColor[i]]
+						normal.addEventListener("click", function (t) {
+							mr(normalColor[i]), nn(t);
+						})
+						normal.setAttribute("id", normalColor[i]),
+						(normal["style"]["backgroundColor"] = se[normalColor[i]]),
+						(normal["title"] = de[normalColor[i]])
+						normalcolourlist.appendChild(normal);
+					}
+					w.appendChild(normalcolourlist);
+					break;
+				case "dark":
+					var darkcolourlist = document.createElement("div");
+					darkcolourlist.id = "darkcolourlist";
+					darkcolourlist.style.display = "none";
+					darkcolourlist["classList"]["add"]("small-scrollbar")
+					darkcolourlist["classList"]["add"]("colourlist")
+					for (let i = 0; i < darkColor.length; i++) {
+						var dark = document.createElement("div");
+						dark["classList"]["add"]("colour")
+						dark["style"]["backgroundColor"] = se[darkColor[i]]
+						dark.addEventListener("click", function (t) {
+							mr(darkColor[i]), nn(t);
+						})
+						dark.setAttribute("id", darkColor[i]),
+						(dark["style"]["backgroundColor"] = se[darkColor[i]]),
+						(dark["title"] = de[darkColor[i]])
+						darkcolourlist.appendChild(dark);
+					}
+					w.appendChild(darkcolourlist);
+					break;
+				case "dark2":
+					var darkcolourlist = document.createElement("div");
+					darkcolourlist.id = "darkercolourlist";
+					darkcolourlist.style.display = "none";
+					darkcolourlist["classList"]["add"]("small-scrollbar")
+					darkcolourlist["classList"]["add"]("colourlist")
+					for (let i = 0; i < darkColor2.length; i++) {
+						var dark = document.createElement("div");
+						dark["classList"]["add"]("colour")
+						dark["style"]["backgroundColor"] = se[darkColor2[i]]
+						dark.addEventListener("click", function (t) {
+							mr(darkColor2[i]), nn(t);
+						})
+						dark.setAttribute("id", darkColor2[i]),
+						(dark["style"]["backgroundColor"] = se[darkColor2[i]]),
+						(dark["title"] = de[darkColor2[i]])
+						darkcolourlist.appendChild(dark);
+					}
+					w.appendChild(darkcolourlist);
+					break;
+			}
+		}
+		let tab_buttons = [
+			"lighter",
+			"light",
+			"normal",
+			"dark",
+			"darker"
+		];
+		function changeColorTabs(color) {
+			let tabs = [
+				"lightercolourlist",
+				"lightcolourlist",
+				"normalcolourlist",
+				"darkcolourlist",
+				"darkercolourlist"
+			];
+			for (let i of tabs) {
+				document.getElementById(i).style.display = "none"
+			}
+			document.getElementById(color+"colourlist").style.display = "flex"
+			for (let i of tab_buttons.map(e=>e+"colortab")) {
+				document.getElementById(i).disabled = false
+			}
+			document.getElementById(color+"colortab").disabled = true
+		}
+		for (let i in tab_buttons.map(e=>e+"colortab")) {
+			document.getElementById(tab_buttons.map(e=>e+"colortab")[i]).addEventListener("click",_=>{
+				changeColorTabs(tab_buttons[i])
+			})
+		}
+		addColors("dark2");
+		addColors("dark");
+		addColors("normal");
+		addColors("light");
+		addColors("light2");
+		addColors("mono");
 
 		function sr(e) {
 			var t = n,
